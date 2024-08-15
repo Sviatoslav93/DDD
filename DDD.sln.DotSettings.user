@@ -1,0 +1,9 @@
+﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=2c8be6af_002Db7e9_002D4c59_002Da56f_002Dc984efa83d13/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="Entity_WhenTransient_ShouldNotBeEqual" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+  &lt;TestAncestor&gt;&#xD;
+    &lt;TestId&gt;xUnit::F2D62120-6985-4306-97A5-C451E16AE88C::net8.0::DDD.Common.Tests.EntityTests&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::F2D62120-6985-4306-97A5-C451E16AE88C::net8.0::DDD.Common.Tests.ValueObjectTests.Should_EqualsReturnTrue_When_ValueObjectsHasTheSameProperties&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::F2D62120-6985-4306-97A5-C451E16AE88C::net8.0::DDD.Common.Tests.ValueObjectTests&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::F2D62120-6985-4306-97A5-C451E16AE88C::net8.0::DDD.Common.Tests.EnumerationTests.Should_GetAll_When_Requested&lt;/TestId&gt;&#xD;
+  &lt;/TestAncestor&gt;&#xD;
+&lt;/SessionState&gt;</s:String></wpf:ResourceDictionary>
