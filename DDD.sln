@@ -17,6 +17,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{75C9265F
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DDD.Common.Tests", "DDD.Common.Tests\DDD.Common.Tests.csproj", "{F2D62120-6985-4306-97A5-C451E16AE88C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application.Common", "Application.Common\Application.Common.csproj", "{34D01BD6-8CBC-40D6-87B1-0F3A834AD75E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataAccess.Common", "DataAccess.Common\DataAccess.Common.csproj", "{E766C518-B11A-402B-B97A-9969010E0EE1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -34,6 +38,14 @@ Global
 		{F2D62120-6985-4306-97A5-C451E16AE88C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F2D62120-6985-4306-97A5-C451E16AE88C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F2D62120-6985-4306-97A5-C451E16AE88C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{34D01BD6-8CBC-40D6-87B1-0F3A834AD75E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{34D01BD6-8CBC-40D6-87B1-0F3A834AD75E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{34D01BD6-8CBC-40D6-87B1-0F3A834AD75E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{34D01BD6-8CBC-40D6-87B1-0F3A834AD75E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E766C518-B11A-402B-B97A-9969010E0EE1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E766C518-B11A-402B-B97A-9969010E0EE1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E766C518-B11A-402B-B97A-9969010E0EE1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E766C518-B11A-402B-B97A-9969010E0EE1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{F2D62120-6985-4306-97A5-C451E16AE88C} = {75C9265F-23CA-44DB-94F0-999D8685F12F}

@@ -1,6 +1,8 @@
-﻿namespace Domain.Common;
+﻿using Domain.Common.Abstractions;
 
-public class AuditableEntity<T> : Entity<T>
+namespace Domain.Common;
+
+public class AuditableEntity<T> : Entity<T>, IAuditableEntity
     where T : struct, IEquatable<T>
 {
     public DateTimeOffset Created { get; private set; }

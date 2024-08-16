@@ -1,4 +1,6 @@
-﻿namespace Domain.Common;
+﻿using Domain.Common.Abstractions;
+
+namespace Domain.Common;
 
 public abstract class Entity<T>
     where T : struct, IEquatable<T>
