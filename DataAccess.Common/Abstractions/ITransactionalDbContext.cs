@@ -1,12 +1,13 @@
 namespace DataAccess.Common.Abstractions;
 
-public interface ITransactionalDbContext
+public interface ITransactionalDbContext<T>
+    where T : IAsyncDisposable
 {
     bool HasActiveTransaction { get; }
 
-    Task<IAsyncDisposable> BeginTransactionAsync(CancellationToken cancellationToken = default);
+    Task<T> BeginTransactionAsync(CancellationToken cancellationToken = default);
 
-    Task CommitTransactionAsync(IAsyncDisposable transaction, CancellationToken cancellationToken);
+    Task CommitTransactionAsync(T transaction, CancellationToken cancellationToken);
 
-    Task RollbackTransaction(CancellationToken cancellationToken = default);
+    Task RollbackTransactionAsync(CancellationToken cancellationToken = default);
 }

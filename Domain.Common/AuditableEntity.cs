@@ -5,23 +5,23 @@ namespace Domain.Common;
 public class AuditableEntity<T> : Entity<T>, IAuditableEntity
     where T : struct, IEquatable<T>
 {
-    public DateTimeOffset Created { get; private set; }
+    public DateTimeOffset CreatedAt { get; private set; }
 
     public string CreatedBy { get; private set; } = null!;
 
-    public DateTimeOffset Updated { get; private set; }
+    public DateTimeOffset? UpdatedAt { get; private set; }
 
-    public string UpdatedBy { get; private set; } = null!;
+    public string? UpdatedBy { get; private set; }
 
-    public void SetCreatedInfo(DateTimeOffset created, string createdBy)
+    public void SetCreatedInfo(DateTimeOffset createdAt, string createdBy)
     {
-        Created = created;
+        CreatedAt = createdAt;
         CreatedBy = createdBy;
     }
 
-    public void SetModifiedInfo(DateTimeOffset updated, string updatedBy)
+    public void SetModifiedInfo(DateTimeOffset updatedAt, string updatedBy)
     {
-        Updated = updated;
+        UpdatedAt = updatedAt;
         UpdatedBy = updatedBy;
     }
 }
