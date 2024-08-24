@@ -14,9 +14,9 @@ public static partial class Guard
         return value;
     }
 
-    public static DateTimeOffset NotPast(this DateTimeOffset value, [CallerArgumentExpression("value")] string param = "unknown")
+    public static DateTimeOffset NotPast(this DateTimeOffset value, TimeProvider timeProvider, [CallerArgumentExpression("value")] string param = "unknown")
     {
-        if (value < DateTimeOffset.Now)
+        if (value < timeProvider.GetUtcNow())
         {
             throw new ArgumentException("Value cannot be in the past.", param);
         }

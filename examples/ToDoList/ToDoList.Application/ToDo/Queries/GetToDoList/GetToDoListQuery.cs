@@ -4,4 +4,4 @@ using ToDoList.Application.ToDo.Queries.Views;
 
 namespace ToDoList.Application.ToDo.Queries.GetToDoList;
 
-public record struct GetToDoListQuery(Guid Id) : IRequest<Result<ToDoListView>>;
+public record struct GetToDoListQuery(Guid ToDoListId) : IRequest<Result<ToDoListView>>;

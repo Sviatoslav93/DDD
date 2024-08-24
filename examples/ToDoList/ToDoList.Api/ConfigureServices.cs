@@ -1,4 +1,5 @@
 ﻿using Application.Common.Abstractions.Services;
+using Microsoft.OpenApi.Models;
 using ToDoList.Api.Mappings;
 using ToDoList.Api.Services;
 using ToDoList.Application;
@@ -12,7 +13,11 @@ public static class ConfigureServices
     {
         services
             .AddEndpointsApiExplorer()
-            .AddSwaggerGen()
+            .AddSwaggerGen(options =>
+            {
+                options.SwaggerDoc("v1", new OpenApiInfo { Title = "ToDoList.Api", Version = "v1" });
+                options.SupportNonNullableReferenceTypes();
+            })
             .AddMappings();
 
         services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();

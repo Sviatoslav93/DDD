@@ -13,5 +13,10 @@ public class ToDoListConfiguration : AuditableEntityConfiguration<Domain.Aggrega
         builder
             .Property(x => x.Title)
             .HasMaxLength(ToDoListRestrictions.TitleMaxLength);
+
+        builder
+            .HasMany(e => e.Items)
+            .WithOne()
+            .IsRequired();
     }
 }

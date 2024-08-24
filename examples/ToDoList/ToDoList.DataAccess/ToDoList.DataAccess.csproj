@@ -1,0 +1,33 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Dapper" Version="2.1.35" />
+      <PackageReference Include="MediatR" Version="12.4.0" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.8">
+        <PrivateAssets>all</PrivateAssets>
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
+      <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="8.0.8" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.8" />
+      <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="8.0.2" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\..\Application.Common\Application.Common.csproj" />
+      <ProjectReference Include="..\..\..\DataAccess.Common\DataAccess.Common.csproj" />
+      <ProjectReference Include="..\ToDoList.Application\ToDoList.Application.csproj" />
+      <ProjectReference Include="..\ToDoList.Domain\ToDoList.Domain.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Remove="Migrations\20240824223159_FixRelations.cs" />
+      <Compile Remove="Migrations\20240824223159_FixRelations.Designer.cs" />
+    </ItemGroup>
+
+</Project>

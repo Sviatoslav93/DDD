@@ -2,7 +2,13 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using ToDoList.Api.Helpers;
-using ToDoList.Application.ToDo.Commands.ToDoListCreate;
+using ToDoList.Application.ToDo.Commands.AddToDoItem;
+using ToDoList.Application.ToDo.Commands.CompleteToDoItem;
+using ToDoList.Application.ToDo.Commands.CreateToDoList;
+using ToDoList.Application.ToDo.Commands.DeleteDoToList;
+using ToDoList.Application.ToDo.Commands.DeleteToDoItem;
+using ToDoList.Application.ToDo.Commands.UpdateToDoItem;
+using ToDoList.Application.ToDo.Commands.UpdateToDoList;
 using ToDoList.Application.ToDo.Queries.GetToDoList;
 using ToDoList.Application.ToDo.Queries.GetToDoLists;
 using ToDoList.Constants.Requests;
@@ -18,12 +24,12 @@ public static class ToDoListEndpoints
 
         group.AllowAnonymous();
 
-        group.MapGet("/{id}", async (
-                [FromRoute] Guid id,
+        group.MapGet("{todoListId}", async (
+                [FromRoute] Guid todoListId,
                 [FromServices] ISender sender,
                 CancellationToken ct) =>
             {
-                var result = await sender.Send(new GetToDoListQuery(id), ct);
+                var result = await sender.Send(new GetToDoListQuery(todoListId), ct);
 
                 return result.Match(
                     v => Results.Ok(v.Adapt<ToDoListResponse>()),
@@ -49,11 +55,109 @@ public static class ToDoListEndpoints
             [FromServices] ISender sender,
             CancellationToken ct) =>
         {
-            var command = request.Adapt<ToDoListCreateCommand>();
-            var result = await sender.Send(command, ct);
+            var result = await sender.Send(request.Adapt<CreateToDoListCommand>(), ct);
 
             return result.Match(
                 v => Results.Created($"/api/todoList/{v}", v),
+                f => Results.Problem(f.ToProblemDetails()));
+        });
+
+        group.MapPut("/{todoListId}", async (
+            Guid todoListId,
+            [FromBody] UpdateToDoListRequest request,
+            [FromServices] ISender sender,
+            CancellationToken ct) =>
+        {
+            if (todoListId != request.ToDoListId)
+            {
+                return Results.BadRequest();
+            }
+
+            var result = await sender.Send(request.Adapt<UpdateToDoListCommand>(), ct);
+
+            return result.Match(
+                _ => Results.Ok(),
+                f => Results.Problem(f.ToProblemDetails()));
+        });
+
+        group.MapDelete("/{todoListId}", async (
+            [FromRoute] Guid todoListId,
+            [FromServices] ISender sender,
+            CancellationToken ct) =>
+        {
+            var result = await sender.Send(new DeleteToDoListCommand(todoListId), ct);
+
+            return result.Match(
+                _ => Results.NoContent(),
+                f => Results.Problem(f.ToProblemDetails()));
+        });
+
+        group.MapPost("/{todoListId}/items", async (
+            [FromRoute] Guid todoListId,
+            [FromBody] AddToDoItemRequest request,
+            [FromServices] ISender sender,
+            CancellationToken ct) =>
+        {
+            if (todoListId != request.ToDoListId)
+            {
+                return Results.BadRequest();
+            }
+
+            var result = await sender.Send(request.Adapt<AddToDoItemCommand>(), ct);
+
+            return result.Match(
+                _ => Results.NoContent(),
+                f => Results.Problem(f.ToProblemDetails()));
+        });
+
+        group.MapPut("/{todoListId}/items/{todoItemId}", async (
+            [FromRoute] Guid todoListId,
+            [FromRoute] Guid todoItemId,
+            [FromBody] UpdateToDoItemRequest request,
+            [FromServices] ISender sender,
+            CancellationToken ct) =>
+        {
+            if (todoListId != request.ToDoListId || todoItemId != request.ToDoItemId)
+            {
+                return Results.BadRequest();
+            }
+
+            var result = await sender.Send(request.Adapt<UpdateToDoItemCommand>(), ct);
+
+            return result.Match(
+                _ => Results.Ok(),
+                f => Results.Problem(f.ToProblemDetails()));
+        });
+
+        group.MapPut("/{todoListId}/items/{todoItemId}/complete", async (
+            [FromRoute] Guid todoListId,
+            [FromRoute] Guid todoItemId,
+            [FromBody] CompleteToDoItemRequest request,
+            [FromServices] ISender sender,
+            CancellationToken ct) =>
+        {
+            if (todoListId != request.ToDoListId || todoItemId != request.ToDoItemId)
+            {
+                return Results.BadRequest();
+            }
+
+            var result = await sender.Send(request.Adapt<CompleteToDoItemCommand>(), ct);
+
+            return result.Match(
+                _ => Results.NoContent(),
+                f => Results.Problem(f.ToProblemDetails()));
+        });
+
+        group.MapDelete("/{todoListId}/items/{todoItemId}", async (
+            [FromRoute] Guid todoListId,
+            [FromRoute] Guid todoItemId,
+            [FromServices] ISender sender,
+            CancellationToken ct) =>
+        {
+            var result = await sender.Send(new DeleteToDoItemCommand(todoListId, todoItemId), ct);
+
+            return result.Match(
+                _ => Results.NoContent(),
                 f => Results.Problem(f.ToProblemDetails()));
         });
 

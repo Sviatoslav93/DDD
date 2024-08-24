@@ -8,5 +8,5 @@ namespace ToDoList.Application.ToDo.Queries.GetToDoList;
 public class GetToDoListQueryHandler(IToDoListQueries queries) : IRequestHandler<GetToDoListQuery, Result<ToDoListView>>
 {
     public Task<Result<ToDoListView>> Handle(GetToDoListQuery request, CancellationToken cancellationToken) =>
-        queries.GetToDoListById(request.Id, cancellationToken);
+        queries.GetToDoListById(request.ToDoListId, cancellationToken);
 }

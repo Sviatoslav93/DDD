@@ -5,7 +5,7 @@ namespace ToDoList.Constants.Requests;
 
 public class UpdateToDoListRequest
 {
-    public Guid Id { get; set; }
+    public Guid ToDoListId { get; set; }
 
     [Required]
     [MaxLength(ToDoListRestrictions.TitleMaxLength)]
