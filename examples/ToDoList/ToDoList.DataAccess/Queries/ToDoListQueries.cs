@@ -34,6 +34,7 @@ public class ToDoListQueries(IConfiguration configuration, TimeProvider timeProv
                              FROM ToDoLists
                                       LEFT JOIN dbo.ToDoItems ON ToDoLists.Id = ToDoItems.ToDoListId
                                       WHERE ToDoLists.Id = @Id
+                                      ORDER BY ToDoItems.DueDate
                              """;
 
         var toDoListDictionary = new Dictionary<Guid, ToDoListView>();
@@ -110,7 +111,7 @@ public class ToDoListQueries(IConfiguration configuration, TimeProvider timeProv
                                     IIF(ToDoItems.CompletedDate IS NOT NULL, 1, 0) AS IsDone
                              FROM LimitedToDoLists
                                       LEFT JOIN dbo.ToDoItems ON LimitedToDoLists.Id = ToDoItems.ToDoListId
-                             ORDER BY LimitedToDoLists.Id, ToDoItems.Id;
+                             ORDER BY LimitedToDoLists.Id, ToDoItems.DueDate;
                              """;
 
         var toDoListDictionary = new Dictionary<Guid, ToDoListView>();

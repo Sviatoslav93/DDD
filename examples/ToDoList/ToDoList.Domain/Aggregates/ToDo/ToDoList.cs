@@ -29,7 +29,7 @@ public class ToDoList : AuditableEntity<Guid>, IAggregateRoot
 
     public Result<Unit> AddItem(ToDoItem item)
     {
-        if (Items.Any(i => i.Title == item.Title))
+        if (IsItemWithSameTitleExists(item.Title, item.Id))
         {
             return ToDoListErrors.ItemWithSameTitleAlreadyExists(item.Title);
         }
@@ -74,8 +74,10 @@ public class ToDoList : AuditableEntity<Guid>, IAggregateRoot
         return Unit.Value;
     }
 
-    private bool IsItemWithSameTitleExists(string title)
+    private bool IsItemWithSameTitleExists(string title, Guid? id = null)
     {
-        return Items.Any(i => i.Title == title);
+        return id is not null
+            ? Items.Any(x => x.Id != id && x.Title == title)
+            : Items.Any(i => i.Title == title);
     }
 }

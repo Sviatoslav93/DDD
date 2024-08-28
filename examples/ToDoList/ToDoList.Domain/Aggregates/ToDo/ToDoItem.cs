@@ -13,6 +13,7 @@ public class ToDoItem : Entity<Guid>
     {
     }
 
+    public Guid ToDoListId { get; private set; }
     public string Title { get; private set; } = null!;
     public string Description { get; private set; } = null!;
     public DateTimeOffset CreatedDate { get; init; }

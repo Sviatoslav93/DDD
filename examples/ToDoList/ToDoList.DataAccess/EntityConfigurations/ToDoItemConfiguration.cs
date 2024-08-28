@@ -21,6 +21,10 @@ public class ToDoItemConfiguration : EntityConfiguration<ToDoItem, Guid>
             .HasMaxLength(ToDoItemRestrictions.DescriptionMaxLength);
 
         builder
+            .HasIndex(x => new { x.Title, x.ToDoListId })
+            .IsUnique();
+
+        builder
             .Ignore(x => x.IsDone);
     }
 }

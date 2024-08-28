@@ -54,6 +54,9 @@ namespace ToDoList.DataAccess.Migrations
 
                     b.HasIndex("ToDoListId");
 
+                    b.HasIndex("Title", "ToDoListId")
+                        .IsUnique();
+
                     b.ToTable("ToDoItems");
                 });
 
