@@ -29,4 +29,28 @@ public static class ResultExtensions
             Extensions = errorsList.ToDictionary(x => x.Code, error => (object)new { error.Description, error.ErrorType })!,
         };
     }
+
+    public static ProblemDetails ToProblemDetails(this Error error)
+    {
+        var statusCode = error.ErrorType switch
+        {
+            ErrorType.Failure => StatusCodes.Status400BadRequest,
+            ErrorType.Unexpected => StatusCodes.Status400BadRequest,
+            ErrorType.Validation => StatusCodes.Status400BadRequest,
+            ErrorType.Conflict => StatusCodes.Status409Conflict,
+            ErrorType.NotFound => StatusCodes.Status404NotFound,
+            ErrorType.Forbidden => StatusCodes.Status403Forbidden,
+            _ => throw new ArgumentOutOfRangeException(),
+        };
+
+        return new ProblemDetails
+        {
+            Status = statusCode,
+            Title = $"{error.ErrorType} error occured",
+            Extensions = new Dictionary<string, object?>
+            {
+                { error.Code, new { error.Description, error.ErrorType } },
+            },
+        };
+    }
 }

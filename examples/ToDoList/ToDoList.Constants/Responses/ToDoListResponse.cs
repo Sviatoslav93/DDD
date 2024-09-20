@@ -1,15 +1,10 @@
 ﻿namespace ToDoList.Constants.Responses;
 
-public class ToDoListResponse
-{
-    public Guid Id { get; set; }
-    public string Title { get; set; } = null!;
-
-    public string CreatedBy { get; set; } = null!;
-    public string CreatedAt { get; set; } = null!;
-
-    public string? UpdatedBy { get; set; }
-    public string? UpdatedAt { get; set; }
-
-    public IEnumerable<ToDoItemResponse> Items { get; set; } = [];
-}
+public readonly record struct ToDoListResponse(
+    Guid Id,
+    string Title,
+    string CreatedBy,
+    string CreatedAt,
+    string? UpdatedBy,
+    string? UpdatedAt,
+    IEnumerable<ToDoItemResponse> Items);

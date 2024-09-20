@@ -90,55 +90,15 @@ public class ToDoListQueries(IConfiguration configuration, TimeProvider timeProv
 
         using var connection = CreateConnection();
         const string query = """
-                             WITH LimitedToDoLists AS (
-                                 SELECT *
+                             SELECT *
                                  FROM ToDoLists
                                  ORDER BY Id
                                  OFFSET @From ROWS FETCH NEXT @To ROWS ONLY
-                             )
-                             SELECT LimitedToDoLists.Id,
-                                    LimitedToDoLists.Title,
-                                    LimitedToDoLists.CreatedBy,
-                                    LimitedToDoLists.CreatedAt,
-                                    ToDoItems.Id AS ToDoItemId,
-                                    ToDoItems.Id,
-                                    ToDoItems.Title,
-                                    ToDoItems.Description,
-                                    ToDoItems.CreatedDate,
-                                    ToDoItems.DueDate,
-                                    ToDoItems.CompletedDate,
-                                    IIF(ToDoItems.DueDate < @Now AND ToDoItems.CompletedDate IS NULL, 1, 0) AS IsFailed,
-                                    IIF(ToDoItems.CompletedDate IS NOT NULL, 1, 0) AS IsDone
-                             FROM LimitedToDoLists
-                                      LEFT JOIN dbo.ToDoItems ON LimitedToDoLists.Id = ToDoItems.ToDoListId
-                             ORDER BY LimitedToDoLists.Id, ToDoItems.DueDate;
                              """;
 
-        var toDoListDictionary = new Dictionary<Guid, ToDoListView>();
+        var todoListsItems = await connection.QueryAsync<ToDoListsItemView>(query, new { From = from, To = to, Now = timeProvider.GetUtcNow() });
 
-        await connection.QueryAsync<ToDoListView, ToDoItemView, ToDoListView>(
-            query, (toDoList, toDoListItem) =>
-            {
-                var value = toDoListDictionary.GetValueOrDefault(toDoList.Id);
-                if (value is null)
-                {
-                    value = toDoList;
-                    toDoListDictionary.Add(value.Id, value);
-                }
-
-                if (toDoListItem.Id != Guid.Empty)
-                {
-                    value.Items.Add(toDoListItem);
-                }
-
-                return value;
-            },
-#pragma warning disable SA1117
-            new { From = from, To = to, Now = timeProvider.GetUtcNow() },
-            splitOn: "ToDoItemId");
-#pragma warning restore SA1117
-
-        return new ToDoListsView(toDoListDictionary.Select(x => x.Value), pageSize, pageNumber);
+        return new ToDoListsView(todoListsItems, pageSize, pageNumber);
     }
 
     private async Task<int> GetToDoListsCount(CancellationToken cancellationToken)

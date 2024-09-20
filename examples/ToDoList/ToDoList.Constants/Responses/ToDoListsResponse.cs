@@ -6,5 +6,5 @@ public class ToDoListsResponse
     public int PagesCount { get; set; }
     public int PageSize { get; set; }
     public int PageNumber { get; set; }
-    public IEnumerable<ToDoListResponse> Items { get; set; } = [];
+    public IEnumerable<ToDoListsItemResponse> Items { get; set; } = [];
 }

@@ -29,7 +29,8 @@ public static class ToDoListEndpoints
                 [FromServices] ISender sender,
                 CancellationToken ct) =>
             {
-                var result = await sender.Send(new GetToDoListQuery(todoListId), ct);
+                var query = new GetToDoListQuery(todoListId);
+                var result = await sender.Send(query, ct);
 
                 return result.Match(
                     v => Results.Ok(v.Adapt<ToDoListResponse>()),
@@ -43,7 +44,8 @@ public static class ToDoListEndpoints
             [FromServices] ISender sender,
             CancellationToken ct) =>
         {
-            var result = await sender.Send(new GetToDoListsQuery(pageNumber, pageSize), ct);
+            var query = new GetToDoListsQuery(pageNumber, pageSize);
+            var result = await sender.Send(query, ct);
 
             return result.Match(
                 v => Results.Ok(v.Adapt<ToDoListsResponse>()),
@@ -55,7 +57,8 @@ public static class ToDoListEndpoints
             [FromServices] ISender sender,
             CancellationToken ct) =>
         {
-            var result = await sender.Send(request.Adapt<CreateToDoListCommand>(), ct);
+            var command = request.Adapt<CreateToDoListCommand>();
+            var result = await sender.Send(command, ct);
 
             return result.Match(
                 v => Results.Created($"/api/todoList/{v}", v),
@@ -70,10 +73,11 @@ public static class ToDoListEndpoints
         {
             if (todoListId != request.ToDoListId)
             {
-                return Results.BadRequest();
+                return UrlMismatch();
             }
 
-            var result = await sender.Send(request.Adapt<UpdateToDoListCommand>(), ct);
+            var command = request.Adapt<UpdateToDoListCommand>();
+            var result = await sender.Send(command, ct);
 
             return result.Match(
                 _ => Results.Ok(),
@@ -85,7 +89,8 @@ public static class ToDoListEndpoints
             [FromServices] ISender sender,
             CancellationToken ct) =>
         {
-            var result = await sender.Send(new DeleteToDoListCommand(todoListId), ct);
+            var command = new DeleteToDoListCommand(todoListId);
+            var result = await sender.Send(command, ct);
 
             return result.Match(
                 _ => Results.NoContent(),
@@ -100,10 +105,11 @@ public static class ToDoListEndpoints
         {
             if (todoListId != request.ToDoListId)
             {
-                return Results.BadRequest();
+                return UrlMismatch();
             }
 
-            var result = await sender.Send(request.Adapt<AddToDoItemCommand>(), ct);
+            var command = request.Adapt<AddToDoItemCommand>();
+            var result = await sender.Send(command, ct);
 
             return result.Match(
                 _ => Results.NoContent(),
@@ -119,10 +125,11 @@ public static class ToDoListEndpoints
         {
             if (todoListId != request.ToDoListId || todoItemId != request.ToDoItemId)
             {
-                return Results.BadRequest();
+                return UrlMismatch();
             }
 
-            var result = await sender.Send(request.Adapt<UpdateToDoItemCommand>(), ct);
+            var command = request.Adapt<UpdateToDoItemCommand>();
+            var result = await sender.Send(command, ct);
 
             return result.Match(
                 _ => Results.Ok(),
@@ -138,10 +145,11 @@ public static class ToDoListEndpoints
         {
             if (todoListId != request.ToDoListId || todoItemId != request.ToDoItemId)
             {
-                return Results.BadRequest();
+                UrlMismatch();
             }
 
-            var result = await sender.Send(request.Adapt<CompleteToDoItemCommand>(), ct);
+            var command = request.Adapt<CompleteToDoItemCommand>();
+            var result = await sender.Send(command, ct);
 
             return result.Match(
                 _ => Results.NoContent(),
@@ -154,7 +162,8 @@ public static class ToDoListEndpoints
             [FromServices] ISender sender,
             CancellationToken ct) =>
         {
-            var result = await sender.Send(new DeleteToDoItemCommand(todoListId, todoItemId), ct);
+            var command = new DeleteToDoItemCommand(todoListId, todoItemId);
+            var result = await sender.Send(command, ct);
 
             return result.Match(
                 _ => Results.NoContent(),
@@ -163,4 +172,12 @@ public static class ToDoListEndpoints
 
         return app;
     }
+
+    private static IResult UrlMismatch() => Results.Problem(
+        new ProblemDetails
+        {
+            Status = StatusCodes.Status400BadRequest,
+            Title = "Url mismatch",
+            Detail = "Url mismatch",
+        });
 }

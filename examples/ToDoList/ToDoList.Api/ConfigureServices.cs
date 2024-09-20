@@ -20,6 +20,8 @@ public static class ConfigureServices
             })
             .AddMappings();
 
+        services.AddCors();
+
         services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
         services.AddScoped<ICurrentUserService, CurrentUserService>();
         services.AddSingleton(TimeProvider.System);

@@ -2,7 +2,7 @@
 
 public class ToDoListsView
 {
-    public ToDoListsView(IEnumerable<ToDoListView> items, int pageSize, int pageNumber)
+    public ToDoListsView(IEnumerable<ToDoListsItemView> items, int pageSize, int pageNumber)
     {
         Items = items;
         ItemsCount = Items.Count();
@@ -15,5 +15,5 @@ public class ToDoListsView
     public int PagesCount { get; }
     public int PageSize { get; }
     public int PageNumber { get; }
-    public IEnumerable<ToDoListView> Items { get; }
+    public IEnumerable<ToDoListsItemView> Items { get; }
 }

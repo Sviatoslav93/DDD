@@ -29,7 +29,7 @@ public class ToDoList : AuditableEntity<Guid>, IAggregateRoot
 
     public Result<Unit> AddItem(ToDoItem item)
     {
-        if (IsItemWithSameTitleExists(item.Title, item.Id))
+        if (IsItemWithSameTitleExists(item.Title))
         {
             return ToDoListErrors.ItemWithSameTitleAlreadyExists(item.Title);
         }
@@ -51,7 +51,7 @@ public class ToDoList : AuditableEntity<Guid>, IAggregateRoot
             return ToDoListErrors.NotFound(itemId);
         }
 
-        return IsItemWithSameTitleExists(title)
+        return IsItemWithSameTitleExists(title, itemId)
             ? ToDoListErrors.ItemWithSameTitleAlreadyExists(item.Title)
             : item.Update(title, description, dueDate, timeProvider);
     }
