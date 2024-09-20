@@ -1,0 +1,21 @@
+.container {
+  margin: 10px;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  .todo-lists{
+    width: 50%;
+    mat-list-item:hover {
+      background-color: tomato;
+    }
+  }
+  .todo-list-items{
+    width: 50%;
+    .done{
+      color: green;
+    }
+    .failed{
+      color: red;
+    }
+  }
+}

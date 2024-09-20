@@ -1,0 +1,48 @@
+<div class="container">
+  <div class="todo-lists">
+    <mat-card>
+      <mat-card-content>
+        <mat-list role="list">
+          @for (item of todoLists; track item.title) {
+            <mat-list-item (click)="showInfo(item)">
+              <p matListItemTitle>{{ item.title }}</p>
+            </mat-list-item>
+          }
+        </mat-list>
+      </mat-card-content>
+    </mat-card>
+  </div>
+  <div class="todo-list-items">
+    <mat-card>
+      <mat-card-content>
+        @if (currentTodos.length === 0) {
+          <p>No todos found</p>
+        } @else {
+          <mat-list role="list">
+            @for (item of currentTodos; track item.title) {
+              <mat-list-item>
+                <div [class]="item.isDone ? 'done' : item.isFailed ? 'failed' : 'standard'">
+                  {{ item.title }} - {{ item.description }}
+                  <button mat-button [disabled]="item.isDone" (click)="completeItem(item.id)">
+                    COMPLETE
+                  </button>
+                  <button mat-button [disabled]="item.isDone || item.isFailed">
+                    EDIT
+                  </button>
+                  <button mat-button (click)="completeItem(item.id)">
+                    DELETE
+                  </button>
+                </div>
+              </mat-list-item>
+            }
+          </mat-list>
+
+          <p>Completed items: {{ getCompletedCount() / currentTodos.length * 100 }} %</p>
+        }
+        <button mat-button>ADD NEW</button>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>
+<button mat-button>ADD NEW</button>
+
