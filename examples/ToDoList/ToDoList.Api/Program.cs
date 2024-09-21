@@ -18,6 +18,8 @@ app.UseCors(b =>
     b.AllowAnyMethod();
 });
 
+app.UseExceptionHandler();
+
 app.UseSwagger()
     .UseSwaggerUI();
 

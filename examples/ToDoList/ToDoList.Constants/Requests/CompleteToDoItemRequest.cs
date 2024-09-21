@@ -1,5 +1,12 @@
-﻿namespace ToDoList.Constants.Requests;
+﻿using System.ComponentModel.DataAnnotations;
 
-public readonly record struct CompleteToDoItemRequest(
-    Guid ToDoListId,
-    Guid ToDoItemId);
+namespace ToDoList.Constants.Requests;
+
+public class CompleteToDoItemRequest
+{
+    [Required]
+    public required Guid ToDoListId { get; init; }
+
+    [Required]
+    public required Guid ToDoItemId { get; init; }
+}

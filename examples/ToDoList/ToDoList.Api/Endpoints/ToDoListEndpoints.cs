@@ -1,6 +1,7 @@
 ﻿using Mapster;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 using ToDoList.Api.Helpers;
 using ToDoList.Application.ToDo.Commands.AddToDoItem;
 using ToDoList.Application.ToDo.Commands.CompleteToDoItem;
@@ -25,18 +26,19 @@ public static class ToDoListEndpoints
         group.AllowAnonymous();
 
         group.MapGet("{todoListId}", async (
-                [FromRoute] Guid todoListId,
-                [FromServices] ISender sender,
-                CancellationToken ct) =>
-            {
-                var query = new GetToDoListQuery(todoListId);
-                var result = await sender.Send(query, ct);
+            [FromRoute] Guid todoListId,
+            [FromServices] ISender sender,
+            CancellationToken ct) =>
+        {
+            var query = new GetToDoListQuery(todoListId);
+            var result = await sender.Send(query, ct);
 
-                return result.Match(
-                    v => Results.Ok(v.Adapt<ToDoListResponse>()),
-                    f => Results.Problem(f.ToProblemDetails()));
-            })
-            .Produces<ToDoListResponse>();
+            return result.Match(
+                v => Results.Ok(v.Adapt<ToDoListResponse>()),
+                f => Results.Problem(f.ToProblemDetails()));
+        })
+        .WithMetadata(new SwaggerOperationAttribute("GetToDoList", "Get a single ToDo list by id"))
+        .Produces<ToDoListResponse>();
 
         group.MapGet("/", async (
             [FromQuery] int pageNumber,
@@ -50,7 +52,10 @@ public static class ToDoListEndpoints
             return result.Match(
                 v => Results.Ok(v.Adapt<ToDoListsResponse>()),
                 f => Results.Problem(f.ToProblemDetails()));
-        });
+        })
+        .WithMetadata(new SwaggerOperationAttribute("GetToDoLists", "Get a list of ToDo lists"))
+        .Produces<ToDoListsResponse>()
+        .ProducesProblem(StatusCodes.Status404NotFound);
 
         group.MapPost("/", async (
             [FromBody] CreateToDoListRequest request,
@@ -63,7 +68,9 @@ public static class ToDoListEndpoints
             return result.Match(
                 v => Results.Created($"/api/todoList/{v}", v),
                 f => Results.Problem(f.ToProblemDetails()));
-        });
+        })
+        .WithMetadata(new SwaggerOperationAttribute("CreateToDoList", "Create a new ToDo list"))
+        .Produces(StatusCodes.Status201Created);
 
         group.MapPut("/{todoListId}", async (
             Guid todoListId,
@@ -82,7 +89,9 @@ public static class ToDoListEndpoints
             return result.Match(
                 _ => Results.Ok(),
                 f => Results.Problem(f.ToProblemDetails()));
-        });
+        })
+        .WithMetadata(new SwaggerOperationAttribute("UpdateToDoList", "Update a ToDo list"))
+        .Produces(StatusCodes.Status200OK);
 
         group.MapDelete("/{todoListId}", async (
             [FromRoute] Guid todoListId,
@@ -93,9 +102,11 @@ public static class ToDoListEndpoints
             var result = await sender.Send(command, ct);
 
             return result.Match(
-                _ => Results.NoContent(),
+                _ => Results.Ok(),
                 f => Results.Problem(f.ToProblemDetails()));
-        });
+        })
+        .WithMetadata(new SwaggerOperationAttribute("DeleteToDoList", "Delete a ToDo list"))
+        .Produces(StatusCodes.Status200OK);
 
         group.MapPost("/{todoListId}/items", async (
             [FromRoute] Guid todoListId,
@@ -112,9 +123,11 @@ public static class ToDoListEndpoints
             var result = await sender.Send(command, ct);
 
             return result.Match(
-                _ => Results.NoContent(),
+                _ => Results.Ok(),
                 f => Results.Problem(f.ToProblemDetails()));
-        });
+        })
+        .WithMetadata(new SwaggerOperationAttribute("AddToDoItem", "Add a new ToDo item to a ToDo list"))
+        .Produces(StatusCodes.Status200OK);
 
         group.MapPut("/{todoListId}/items/{todoItemId}", async (
             [FromRoute] Guid todoListId,
@@ -134,7 +147,9 @@ public static class ToDoListEndpoints
             return result.Match(
                 _ => Results.Ok(),
                 f => Results.Problem(f.ToProblemDetails()));
-        });
+        })
+        .WithMetadata(new SwaggerOperationAttribute("UpdateToDoItem", "Update a ToDo item"))
+        .Produces(StatusCodes.Status200OK);
 
         group.MapPut("/{todoListId}/items/{todoItemId}/complete", async (
             [FromRoute] Guid todoListId,
@@ -152,9 +167,11 @@ public static class ToDoListEndpoints
             var result = await sender.Send(command, ct);
 
             return result.Match(
-                _ => Results.NoContent(),
+                _ => Results.Ok(),
                 f => Results.Problem(f.ToProblemDetails()));
-        });
+        })
+        .WithMetadata(new SwaggerOperationAttribute("CompleteToDoItem", "Complete a ToDo item"))
+        .Produces(StatusCodes.Status200OK);
 
         group.MapDelete("/{todoListId}/items/{todoItemId}", async (
             [FromRoute] Guid todoListId,
@@ -166,9 +183,11 @@ public static class ToDoListEndpoints
             var result = await sender.Send(command, ct);
 
             return result.Match(
-                _ => Results.NoContent(),
+                _ => Results.Ok(),
                 f => Results.Problem(f.ToProblemDetails()));
-        });
+        })
+        .WithMetadata(new SwaggerOperationAttribute("DeleteToDoItem", "Delete a ToDo item"))
+        .Produces(StatusCodes.Status200OK);
 
         return app;
     }

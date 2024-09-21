@@ -1,4 +1,11 @@
-﻿namespace ToDoList.Constants.Requests;
+﻿using System.ComponentModel.DataAnnotations;
+using ToDoList.Domain.Aggregates.ToDo.Restrictions;
 
-public readonly record struct CreateToDoListRequest(
-    string Title);
+namespace ToDoList.Constants.Requests;
+
+public class CreateToDoListRequest
+{
+    [Required]
+    [MaxLength(ToDoListRestrictions.TitleMaxLength)]
+    public required string Title { get; init; }
+}

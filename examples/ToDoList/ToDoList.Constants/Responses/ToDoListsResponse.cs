@@ -2,9 +2,9 @@
 
 public class ToDoListsResponse
 {
-    public int ItemsCount { get; set; }
-    public int PagesCount { get; set; }
-    public int PageSize { get; set; }
-    public int PageNumber { get; set; }
+    public int ItemsCount { get; init; }
+    public int PagesCount { get; init; }
+    public int PageSize { get; init; }
+    public int PageNumber { get; init; }
     public IEnumerable<ToDoListsItemResponse> Items { get; set; } = [];
 }
