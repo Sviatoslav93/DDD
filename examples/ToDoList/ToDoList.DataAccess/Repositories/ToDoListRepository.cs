@@ -1,10 +1,9 @@
 ﻿using Application.Common.Abstractions.Persistence;
-using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Result;
-using Result.Errors;
 using ToDoList.Application.ToDo.Persistence;
 using ToDoList.DataAccess.Contexts;
+using ToDoList.Errors;
 using ToDoListEntity = ToDoList.Domain.Aggregates.ToDo.ToDoList;
 
 namespace ToDoList.DataAccess.Repositories;
@@ -21,7 +20,7 @@ public class ToDoListRepository(ToDoListDbContext context) : IToDoListRepository
 
         if (toDoList is null)
         {
-            return Error.NotFound("ToDoList.NotFound", $"entity with id {id} was not found");
+            return new NotFoundError("ToDo list not found");
         }
 
         return toDoList;
@@ -34,16 +33,16 @@ public class ToDoListRepository(ToDoListDbContext context) : IToDoListRepository
         return entry.Entity.Id;
     }
 
-    public async Task<Result<Unit>> Delete(Guid id, CancellationToken cancellationToken)
+    public async Task<Result<Nothing>> Delete(Guid id, CancellationToken cancellationToken)
     {
         var toDoList = await context.ToDoLists.FindAsync([id], cancellationToken: cancellationToken);
 
         if (toDoList is null)
         {
-            return Error.NotFound("ToDoList.NotFound", $"entity with id {id} was not found");
+            return new NotFoundError("ToDo list not found");
         }
 
         context.ToDoLists.Remove(toDoList);
-        return Unit.Value;
+        return Nothing.Value;
     }
 }

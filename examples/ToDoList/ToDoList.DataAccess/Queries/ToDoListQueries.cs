@@ -3,7 +3,6 @@ using Dapper;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using Result;
-using Result.Errors;
 using ToDoList.Application.ToDo.Persistence;
 using ToDoList.Application.ToDo.Queries.Views;
 using ToDoList.Errors;
@@ -67,14 +66,14 @@ public class ToDoListQueries(IConfiguration configuration, TimeProvider timeProv
             return toDoListView;
         }
 
-        return Error.NotFound("ToDoList not found", "ToDoList not found");
+        return new NotFoundError("ToDoList not found");
     }
 
     public async Task<Result<ToDoListsView>> GetToDoLists(int pageNumber, int pageSize, CancellationToken cancellationToken)
     {
         if (pageNumber < 1)
         {
-            return ToDoListErrors.InvalidPageNumber(pageNumber);
+            return new Error("Page number can not be less than 1");
         }
 
         var toDoListsCount = await GetToDoListsCount(cancellationToken);
@@ -82,7 +81,7 @@ public class ToDoListQueries(IConfiguration configuration, TimeProvider timeProv
 
         if (pageNumber > pagesCount)
         {
-            return ToDoListErrors.InvalidPageNumber(pageNumber);
+            return new Error("Page number is greater than total pages count");
         }
 
         var from = (pageNumber - 1) * pageSize;

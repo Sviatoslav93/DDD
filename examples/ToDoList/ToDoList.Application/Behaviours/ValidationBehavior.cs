@@ -4,7 +4,7 @@ using FluentValidation.Results;
 using MediatR;
 using Result;
 using Result.Abstractions;
-using Result.Errors;
+using ToDoList.Errors;
 
 namespace ToDoList.Application.Behaviours;
 
@@ -53,7 +53,7 @@ public class ValidationBehavior<TRequest, TResponse>(IEnumerable<IValidator<TReq
             throw new Exception("Can not find factory method");
         }
 
-        var errors = failures.Select(x => Error.Validation($"{x.PropertyName}.{x.ErrorCode}", x.ErrorMessage));
+        var errors = failures.Select(x => new ValidationError(x.ErrorMessage, x.ErrorCode, x.PropertyName)).ToList();
         var response = factoryMethodInfo.Invoke(null, [errors])!;
 
         return (TResponse)response;

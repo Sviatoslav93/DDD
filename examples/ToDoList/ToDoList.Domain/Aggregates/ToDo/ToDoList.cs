@@ -1,8 +1,8 @@
 ﻿using Domain.Common;
 using Domain.Common.Abstractions;
-using MediatR;
 using Result;
-using ToDoList.Errors;
+using Result.Extensions;
+using Utils.Extensions;
 
 namespace ToDoList.Domain.Aggregates.ToDo;
 
@@ -12,66 +12,57 @@ public class ToDoList : AuditableEntity<Guid>, IAggregateRoot
 
     public ICollection<ToDoItem> Items { get; } = [];
 
-    public static Result<ToDoList> Create(string title)
-    {
-        return new ToDoList
+    public static Result<ToDoList> Create(string title) =>
+        new ToDoList
         {
             Title = title,
         };
-    }
 
-    public Result<Unit> Update(string title)
+    public Result<Nothing> Update(string title)
     {
         Title = title;
-
-        return Unit.Value;
+        return Nothing.Value;
     }
 
-    public Result<Unit> AddItem(ToDoItem item)
+    public Result<Nothing> AddItem(ToDoItem item)
     {
         if (IsItemWithSameTitleExists(item.Title))
         {
-            return ToDoListErrors.ItemWithSameTitleAlreadyExists(item.Title);
+            return new Error();
         }
 
         Items.Add(item);
-        return Unit.Value;
+        return Nothing.Value;
     }
 
-    public Result<Unit> UpdateItem(
+    public Result<Nothing> UpdateItem(
         Guid itemId,
         string title,
         string description,
         DateTimeOffset dueDate,
         TimeProvider timeProvider)
     {
-        var item = Items.FirstOrDefault(i => i.Id == itemId);
-        if (item is null)
-        {
-            return ToDoListErrors.NotFound(itemId);
-        }
-
-        return IsItemWithSameTitleExists(title, itemId)
-            ? ToDoListErrors.ItemWithSameTitleAlreadyExists(item.Title)
-            : item.Update(title, description, dueDate, timeProvider);
+        return FindItem(itemId)
+            .Then(x => IsItemWithSameTitleExists(title, x.Id)
+                ? x.AsResult()
+                : new Error())
+            .Then(x => x.Update(title, description, dueDate, timeProvider));
     }
 
-    public Result<Unit> CompleteItem(Guid itemId, TimeProvider timeProvider)
+    public Result<Nothing> CompleteItem(Guid itemId, TimeProvider timeProvider)
     {
-        var item = Items.FirstOrDefault(i => i.Id == itemId);
-        return item?.Complete(timeProvider) ?? ToDoListErrors.NotFound(itemId);
+        return FindItem(itemId)
+            .Then(x => x.Complete(timeProvider));
     }
 
-    public Result<Unit> DeleteItem(Guid requestToDoItemId)
+    public Result<Nothing> DeleteItem(Guid requestToDoItemId)
     {
-        var toRemove = Items.FirstOrDefault(i => i.Id == requestToDoItemId);
-        if (toRemove is null)
-        {
-            return ToDoListErrors.NotFound(requestToDoItemId);
-        }
-
-        Items.Remove(toRemove);
-        return Unit.Value;
+        return FindItem(requestToDoItemId)
+            .Then(x =>
+            {
+                Items.Remove(x);
+                return Nothing.Value;
+            });
     }
 
     private bool IsItemWithSameTitleExists(string title, Guid? id = null)
@@ -79,5 +70,14 @@ public class ToDoList : AuditableEntity<Guid>, IAggregateRoot
         return id is not null
             ? Items.Any(x => x.Id != id && x.Title == title)
             : Items.Any(i => i.Title == title);
+    }
+
+    private Result<ToDoItem> FindItem(Guid itemId)
+    {
+        var item = Items.FirstOrDefault(i => i.Id == itemId);
+
+        return item is not null
+            ? item
+            : new Error();
     }
 }
