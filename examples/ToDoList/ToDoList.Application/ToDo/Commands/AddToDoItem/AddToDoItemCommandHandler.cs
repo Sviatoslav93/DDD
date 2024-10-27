@@ -9,18 +9,16 @@ namespace ToDoList.Application.ToDo.Commands.AddToDoItem;
 public class AddToDoItemCommandHandler(
     TimeProvider timeProvider,
     IToDoListRepository repository)
-    : IRequestHandler<AddToDoItemCommand, Result<Unit>>
+    : IRequestHandler<AddToDoItemCommand, Result<Nothing>>
 {
-    public Task<Result<Unit>> Handle(AddToDoItemCommand request, CancellationToken cancellationToken) =>
+    public Task<Result<Nothing>> Handle(AddToDoItemCommand request, CancellationToken cancellationToken) =>
         repository.GetById(request.ToDoListId, cancellationToken)
-            .ThenAsync(x =>
-            {
-                var (todoItem, failure) = ToDoItem.Create(
+            .ThenAsync(x => ToDoItem.Create(
                     request.Title,
                     request.Description,
                     request.DueDate,
-                    timeProvider);
-
-                return failure ? failure : x.AddItem(todoItem!);
-            });
+                    timeProvider)
+                .Match(
+                    x.AddItem,
+                    Result<Nothing>.Failed));
 }

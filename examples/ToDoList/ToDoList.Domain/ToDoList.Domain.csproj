@@ -8,13 +8,13 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\..\Domain.Common\Domain.Common.csproj" />
-      <ProjectReference Include="..\..\..\Utils.Guard\Utils.Guard.csproj" />
       <ProjectReference Include="..\ToDoList.Errors\ToDoList.Errors.csproj" />
+      <ProjectReference Include="..\Utils\Utils.csproj" />
     </ItemGroup>
 
     <ItemGroup>
       <PackageReference Include="MediatR.Contracts" Version="2.0.1" />
-      <PackageReference Include="Sviatoslav93.Result" Version="1.2.0" />
+      <PackageReference Include="Sviatoslav93.Result" Version="2.0.0" />
     </ItemGroup>
 
 </Project>

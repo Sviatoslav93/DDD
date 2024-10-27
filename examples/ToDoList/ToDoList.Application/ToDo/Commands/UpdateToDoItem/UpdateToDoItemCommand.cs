@@ -8,4 +8,4 @@ public readonly record struct UpdateToDoItemCommand(
     Guid ToDoItemId,
     string Title,
     string Description,
-    DateTimeOffset DueDate) : IRequest<Result<Unit>>;
+    DateTimeOffset DueDate) : IRequest<Result<Nothing>>;

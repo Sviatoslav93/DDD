@@ -1,8 +1,6 @@
 ﻿using Domain.Common;
-using MediatR;
 using Result;
 using ToDoList.Domain.Aggregates.ToDo.Events;
-using ToDoList.Errors;
 
 namespace ToDoList.Domain.Aggregates.ToDo;
 
@@ -38,7 +36,7 @@ public class ToDoItem : Entity<Guid>
         return item;
     }
 
-    public Result<Unit> Update(
+    public Result<Nothing> Update(
         string title,
         string description,
         DateTimeOffset dueDate,
@@ -46,44 +44,44 @@ public class ToDoItem : Entity<Guid>
     {
         if (IsFailed(timeProvider))
         {
-            return ToDoListErrors.ItemAlreadyFailed(Id);
+            return new Error("Can not update item that is already failed");
         }
 
         if (IsDone)
         {
-            return ToDoListErrors.ItemAlreadyCompleted(Id);
+            return new Error("Can not update item that is already completed");
         }
 
         if (dueDate < CreatedDate)
         {
-            return ToDoListErrors.DueDateCannotBeInPast(Id, dueDate);
+            return new Error("Due date can not be earlier than created date");
         }
 
         Title = title;
         Description = description;
         DueDate = dueDate;
 
-        return Unit.Value;
+        return Nothing.Value;
     }
 
-    public Result<Unit> Complete(TimeProvider timeProvider)
+    public Result<Nothing> Complete(TimeProvider timeProvider)
     {
         if (CompletedDate is not null)
         {
-            return ToDoListErrors.ItemAlreadyCompleted(Id);
+            return new Error("Item is already completed");
         }
 
         var now = timeProvider.GetUtcNow();
 
         if (DueDate < now)
         {
-            return ToDoListErrors.ItemDueDatePassed(Id, DueDate);
+            return new Error("Can not complete item that is already failed");
         }
 
         CompletedDate = timeProvider.GetUtcNow();
         AddDomainEvents(new ToItemCompleted(Id));
 
-        return Unit.Value;
+        return Nothing.Value;
     }
 
     private bool IsFailed(TimeProvider timeProvider) => DueDate < timeProvider.GetUtcNow() && !IsDone;

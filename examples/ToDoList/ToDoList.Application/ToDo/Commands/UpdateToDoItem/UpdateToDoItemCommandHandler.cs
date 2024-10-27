@@ -5,9 +5,9 @@ using ToDoList.Application.ToDo.Persistence;
 
 namespace ToDoList.Application.ToDo.Commands.UpdateToDoItem;
 
-public class UpdateToDoItemCommandHandler(IToDoListRepository repository, TimeProvider timeProvider) : IRequestHandler<UpdateToDoItemCommand, Result<Unit>>
+public class UpdateToDoItemCommandHandler(IToDoListRepository repository, TimeProvider timeProvider) : IRequestHandler<UpdateToDoItemCommand, Result<Nothing>>
 {
-    public Task<Result<Unit>> Handle(UpdateToDoItemCommand request, CancellationToken cancellationToken) =>
+    public Task<Result<Nothing>> Handle(UpdateToDoItemCommand request, CancellationToken cancellationToken) =>
         repository.GetById(request.ToDoListId, cancellationToken)
             .ThenAsync(x => x.UpdateItem(
                 request.ToDoItemId,

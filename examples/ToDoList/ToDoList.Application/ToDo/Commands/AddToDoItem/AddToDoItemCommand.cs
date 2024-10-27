@@ -7,4 +7,4 @@ public readonly record struct AddToDoItemCommand(
     Guid ToDoListId,
     string Title,
     string Description,
-    DateTimeOffset DueDate) : IRequest<Result<Unit>>;
+    DateTimeOffset DueDate) : IRequest<Result<Nothing>>;
